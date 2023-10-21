@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Glutts : MonoBehaviour
+public class Prowler_AI : MonoBehaviour
 {
     [Header("AI")]
     [SerializeField] private NavMeshAgent agent;
@@ -13,7 +12,7 @@ public class Glutts : MonoBehaviour
     [SerializeField] private int speed = 5;
 
     [Header("Health")]
-    [SerializeField] private int maxHealth = 10;
+    [SerializeField] private int maxHealth = 5;
     private int currentHealth;
 
     [Header("Attack")]
@@ -26,9 +25,6 @@ public class Glutts : MonoBehaviour
     [SerializeField] private bool enemyFirstAttack;
     private string hitColliderTag;
     private Transform plant;
-    [SerializeField] private GameObject rocksPrefab;
-    [SerializeField] private Transform rocksSpawner;
-    [SerializeField] private GameObject parentEnemyPrefab;
 
     [Header("HitBox")]
     [SerializeField] private float range;
@@ -59,37 +55,23 @@ public class Glutts : MonoBehaviour
 
     private void Update()
     {
+        EnemyMeleeAttack();
 
         if (plantHealthManager == null && playerHealthManager == null)
         {
             enemyFirstAttack = false;
             FollowPlayer();
         }
-
-        if (agent.remainingDistance <= remainingDistance)
-        {
-            EnemyMeleeAttack();
-            agent.speed = 0;
-        }
-        else
-        {
-            EnemyRangeAttack();
-            agent.speed = speed;
-        }
     }
 
-    private void EnemyRangeAttack()
+    public virtual void FixedUpdate()
     {
-        cooldownTimer += Time.deltaTime;
-        if (cooldownTimer >= attackCooldown)
-        {
-            parentEnemyPrefab = GameObject.Find("ParentEnemyHolder");
-            GameObject newObject = Instantiate(rocksPrefab, rocksSpawner.transform.position, Quaternion.identity);
-            newObject.transform.parent = parentEnemyPrefab.transform;
-            cooldownTimer = 0;
-        }
+        if (agent.remainingDistance <= remainingDistance)
+            agent.speed = 0;
+        else
+            agent.speed = speed;
+        FollowPlayer();
     }
-
 
     private void FollowPlayer()
     {
@@ -173,7 +155,5 @@ public class Glutts : MonoBehaviour
         Gizmos.DrawWireCube(hitBox.bounds.center,
         new Vector3(hitBox.bounds.size.x * range, hitBox.bounds.size.y * hbHeight, hitBox.bounds.size.z));
     }
-
-
 
 }
