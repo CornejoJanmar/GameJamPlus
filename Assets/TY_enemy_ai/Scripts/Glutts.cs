@@ -174,6 +174,4 @@ public class Glutts : MonoBehaviour
         new Vector3(hitBox.bounds.size.x * range, hitBox.bounds.size.y * hbHeight, hitBox.bounds.size.z));
     }
 
-
-
 }
