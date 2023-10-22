@@ -69,11 +69,7 @@ public class PlantBullet : MonoBehaviour
             prowler = other.gameObject.GetComponent<Prowler_AI>();
             if (!isDamage)
             {
-<<<<<<< HEAD
-                //prowler.TakeDamage(damage);
-=======
                 prowler.TakeDamage(damage);
->>>>>>> plant-turret
                 isDamage = true;
                 Destroy(gameObject);
             }
@@ -84,11 +80,7 @@ public class PlantBullet : MonoBehaviour
             glutss = other.gameObject.GetComponent<Glutts>();
             if (!isDamage)
             {
-<<<<<<< HEAD
-                //glutss.TakeDamage(damage);
-=======
                 glutss.TakeDamage(damage);
->>>>>>> plant-turret
                 isDamage = true;
                 Destroy(gameObject);
             }
