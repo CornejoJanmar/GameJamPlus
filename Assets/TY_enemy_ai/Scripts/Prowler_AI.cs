@@ -18,7 +18,6 @@ public class Prowler_AI : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private float damage;
     [SerializeField] private int attackCooldown;
-    [SerializeField] private LayerMask playerLayer;
     private float cooldownTimer;
     private PlayerHealthManager playerHealthManager;
     private PlantHealthManager plantHealthManager;
@@ -30,6 +29,7 @@ public class Prowler_AI : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private float hbHeight;
     [SerializeField] BoxCollider2D hitBox;
+    [SerializeField] private LayerMask playerLayer;
 
     // Start is called before the first frame update
     void Start()
@@ -47,7 +47,6 @@ public class Prowler_AI : MonoBehaviour
 
         // Find Player and Components
         player = GameObject.FindGameObjectWithTag("Player");
-        playerLayer = LayerMask.GetMask("player");
 
         cooldownTimer = 0;
         enemyFirstAttack = false;
@@ -55,13 +54,18 @@ public class Prowler_AI : MonoBehaviour
 
     private void Update()
     {
-        EnemyMeleeAttack();
+        if (this == null)
+        {
+            return;
+        }
 
         if (plantHealthManager == null && playerHealthManager == null)
         {
             enemyFirstAttack = false;
             FollowPlayer();
         }
+
+        EnemyMeleeAttack();
     }
 
     public virtual void FixedUpdate()
@@ -76,6 +80,16 @@ public class Prowler_AI : MonoBehaviour
     private void FollowPlayer()
     {
         agent.SetDestination(player.transform.position);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        Debug.Log("Prowler Health: " + currentHealth);
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void EnemyMeleeAttack()

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2875258702421948923}
   m_Layer: 12
   m_Name: Glutts
-  m_TagString: Enemy
+  m_TagString: Glutts
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1248631289
-  m_SortingLayer: 3
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.149055, g: 1, b: 0, a: 1}
@@ -179,7 +179,7 @@ MonoBehaviour:
   attackCooldown: 3
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1536
   enemyFirstAttack: 0
   rocksPrefab: {fileID: 7592721366333952535, guid: aea8e8b5cf4face42a7956572cc183bf, type: 3}
   rocksSpawner: {fileID: 7382931746787008606}
