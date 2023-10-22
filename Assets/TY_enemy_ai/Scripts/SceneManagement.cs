@@ -14,4 +14,8 @@ public class SceneManagement : MonoBehaviour
         Application.Quit();
         UnityEditor.EditorApplication.isPlaying = false; // delete when building the game
     }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 }
