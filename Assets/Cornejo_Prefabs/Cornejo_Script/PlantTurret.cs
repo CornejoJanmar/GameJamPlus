@@ -5,81 +5,70 @@ using UnityEngine;
 
 public class PlantTurret : MonoBehaviour
 {
-    public Transform target;
-    public float range = 10f;
-    public float fireRate = 1f;
-    private float fireCountdown = 0f;
-    public float rotationSpeed = 10f;
+    [SerializeField] float range;
+    [SerializeField] float damage;
+    [SerializeField] float timeBetweenShots;
 
-    public GameObject bulletPrefab;
-    public Transform firePoint;
+    float nextTimeToShoot;
 
-    void Start()
+    public GameObject currentTarget;
+
+    private void Start()
     {
-        InvokeRepeating("UpdateTarget", 0f, 0.5f); // Call UpdateTarget periodically.
+        nextTimeToShoot = Time.time;
     }
 
-    void UpdateTarget()
+/*
+    void updateNearestEnemy()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        float shortestDistance = Mathf.Infinity;
-        GameObject nearestEnemy = null;
+        GameObject currentNearestEnemy = null;
 
-        foreach (GameObject enemy in enemies)
+        float distance = Mathf.Infinity;
+
+        foreach(GameObject enemy in Enemies.enemies)
         {
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance)
+            if(enemy != null)
             {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
+                float _distance = (transform.position - enemy.transform.position).magnitude;
+
+                if (_distance < distance)
+                {
+                    distance = _distance;
+                    currentNearestEnemy = enemy;
+                }
             }
+            
         }
 
-        if (nearestEnemy != null && shortestDistance <= range)
+        if (distance <= range)
         {
-            target = nearestEnemy.transform;
+            currentTarget = currentNearestEnemy;
         }
         else
         {
-            target = null;
+            currentTarget = null;
         }
     }
+*/
 
-    void Update()
+    protected virtual private void shoot()
     {
-        if (target == null)
-        {
-            return;
-        }
+        Enemy enemyScript = currentTarget.GetComponent<Enemy>();
 
-        Vector3 direction = target.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
-
-        if (fireCountdown <= 0f)
-        {
-            Shoot();
-            fireCountdown = 1f / fireRate;
-        }
-
-        fireCountdown -= Time.deltaTime;
+        //enemyScript.takeDamage(damage);
     }
 
-    void Shoot()
+    private void Update()
     {
-        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        //updateNearestEnemy();
 
-        if (bullet != null)
+        if (Time.time >= nextTimeToShoot)
         {
-            bullet.Seek(target);
+            if(currentTarget != null)
+            {
+                shoot();
+                nextTimeToShoot = Time.time + timeBetweenShots;
+            }
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
     }
 }
