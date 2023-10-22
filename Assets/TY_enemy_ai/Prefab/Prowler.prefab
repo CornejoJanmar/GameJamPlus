@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1045088638367347101}
   m_Layer: 12
   m_Name: Prowler
-  m_TagString: Enemy
+  m_TagString: Prowler
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1248631289
-  m_SortingLayer: 3
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -172,14 +172,14 @@ MonoBehaviour:
   agent: {fileID: 1045088638367347094}
   player: {fileID: 0}
   remainingDistance: 2
-  speed: 5
-  maxHealth: 5
+  speed: 6
+  maxHealth: 1
   damage: 1
   attackCooldown: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 1024
   enemyFirstAttack: 0
   range: 1.2
   hbHeight: 1.1
   hitBox: {fileID: 1045088638367347090}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 1536

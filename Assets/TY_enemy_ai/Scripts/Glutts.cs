@@ -51,7 +51,6 @@ public class Glutts : MonoBehaviour
 
         // Find Player and Components
         player = GameObject.FindGameObjectWithTag("Player");
-        playerLayer = LayerMask.GetMask("player");
 
         cooldownTimer = 0;
         enemyFirstAttack = false;
@@ -94,6 +93,16 @@ public class Glutts : MonoBehaviour
     private void FollowPlayer()
     {
         agent.SetDestination(player.transform.position);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        Debug.Log("Glutss Health: " + currentHealth);
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void EnemyMeleeAttack()

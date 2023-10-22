@@ -9,8 +9,6 @@ public class TimeUI : MonoBehaviour
     [SerializeField] private WaveSpawner waveSpawner;
     [SerializeField] private Image timeImg;
 
-    private int divideFillAmount = 10;
-
     private void Update()
     {
         timeImg.fillAmount = waveSpawner.cooldownTimer / waveSpawner.currentWave.TimeBeforeThisWave; ;

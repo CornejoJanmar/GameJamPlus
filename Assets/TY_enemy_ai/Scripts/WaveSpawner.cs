@@ -14,13 +14,11 @@ public class WaveSpawner : MonoBehaviour
     private float timeBetweenSpawns;
     private bool stopSpawning;
     private int i = 0;
-    private bool firstSpawn;
     public float cooldownTimer;
     private void Awake()
     {
         currentWave = waves[i];
         timeBetweenSpawns = currentWave.TimeBeforeThisWave;
-        firstSpawn = false;
         cooldownTimer = 0;
     }
 
@@ -37,7 +35,6 @@ public class WaveSpawner : MonoBehaviour
         if (parentEnemyPrefab.transform.childCount <= 0)
         {
             cooldownTimer += Time.deltaTime;
-            Debug.Log(cooldownTimer);
             if (cooldownTimer >= currentWave.TimeBeforeThisWave)
             {
                 cooldownTimer = 0;
