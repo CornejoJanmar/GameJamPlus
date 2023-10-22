@@ -10,25 +10,18 @@ public class shooting : MonoBehaviour
 
     [SerializeField] private float BulletForce = 20f;
     [SerializeField] private float time = 2.0f;
-    [SerializeField] private float timer = Time.time;
 
-    private void Awake()
-    {
-        timer = time;
-    }
+
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= time)
-        {
+
             if (Input.GetButtonDown("Fire1"))
             {
                 //SoundManager.instance.PlaySound(Attack);
                 Shoot();
-                timer = 0;
             }
-        }
+
     }
 
     void Shoot()
