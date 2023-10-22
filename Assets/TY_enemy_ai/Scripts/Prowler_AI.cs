@@ -169,5 +169,16 @@ public class Prowler_AI : MonoBehaviour
         Gizmos.DrawWireCube(hitBox.bounds.center,
         new Vector3(hitBox.bounds.size.x * range, hitBox.bounds.size.y * hbHeight, hitBox.bounds.size.z));
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (collision.gameObject.tag == "bullet")
+        {
+            Destroy(gameObject);
+
+        }
+
+
+    }
 
 }
