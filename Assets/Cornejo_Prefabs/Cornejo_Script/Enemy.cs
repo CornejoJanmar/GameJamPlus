@@ -1,141 +1,121 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("AI")]
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private GameObject player;
-    [SerializeField] private int remainingDistance;
-    [SerializeField] private int speed;
+    // Public variables
+    public float movementSpeed = 5f;
+    public float attackRange = 5f;
+    public float attackCooldown = 2f;
+    public int maxHealth = 50; // Health variable
 
-    [Header("Health")]
-    [SerializeField] private int maxHealth;
-    private int currentHealth;
+    // Private variables
+    public Transform targetTurret;
+    private float lastAttackTime;
+    private int currentHealth; // Current health variable
+    private PlantTurret[] activeTurrets;
+    private GameObject player; // Player reference
 
-    [Header("Attack")]
-    [SerializeField] private float damage;
-    [SerializeField] private int attackCooldown;
-    [SerializeField] private LayerMask playerLayer;
-    private float cooldownTimer;
-    private PlayerHealthManager playerHealthManager;
-    private PlantHealthManager plantHealthManager;
-    [SerializeField] private bool enemyFirstAttack;
-    private string hitColliderTag;
-    private Transform plant;
-    [SerializeField] private GameObject rocksPrefab;
-    [SerializeField] private Transform rocksSpawner;
-    [SerializeField] private GameObject parentEnemyPrefab;
-
-    [Header("HitBox")]
-    [SerializeField] private float range;
-    [SerializeField] private float hbHeight;
-    [SerializeField] BoxCollider2D hitBox;
-
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        // Set Health
-        currentHealth = maxHealth;
-
-        // Reference agent
-        agent = GetComponent<NavMeshAgent>();
-        hitBox = GetComponent<BoxCollider2D>();
-
-        // Set Agent Values
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
-
-        // Find Player and Components
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerLayer = LayerMask.GetMask("player");
-
-        cooldownTimer = 0;
-        enemyFirstAttack = false;
+        lastAttackTime = Time.time;
+        FindNearestTurret();
+        currentHealth = maxHealth; // Initialize health
+        player = GameObject.FindGameObjectWithTag("Player"); // Find the player
     }
 
-    private void FollowPlayer()
+    public void Update()
     {
-        agent.SetDestination(player.transform.position);
-    }
-
-    private void EnemyMeleeAttack()
-    {
-        if (EnemyInsideHitBox())
+        if (currentHealth <= 0)
         {
-            if (hitColliderTag == "Player")
-            {
-                if (enemyFirstAttack == false)
-                {
-                    enemyFirstAttack = true;
-                    playerHealthManager.DamagePlayer(damage);
-                }
-                else
-                {
-                    cooldownTimer += Time.deltaTime;
-                    if (cooldownTimer >= attackCooldown)
-                    {
-                        cooldownTimer = 0;
-                        playerHealthManager.DamagePlayer(damage);
-                    }
-                }
-            }
-            else if (hitColliderTag == "Plant" && plant != null)
-            {
-                // set the agent destination to plant
-                agent.SetDestination(plant.position);
-                if (enemyFirstAttack == false)
-                {
-                    enemyFirstAttack = true;
-                    plantHealthManager.DamagePlant(damage);
-                }
-                else
-                {
-                    cooldownTimer += Time.deltaTime;
-                    if (cooldownTimer >= attackCooldown)
-                    {
-                        cooldownTimer = 0;
-                        plantHealthManager.DamagePlant(damage);
-                    }
-                }
-            }
+            // Implement enemy death or removal logic here
+            return;
+        }
 
+        if (targetTurret == null || !targetTurret.gameObject.activeSelf)
+        {
+            FindNearestTurret();
+            return;
+        }
+
+        float distanceToTurret = Vector3.Distance(transform.position, targetTurret.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+
+        if (Random.Range(0f, 1f) < 0.5f)
+        {
+            // 50% chance to attack the player
+            if (distanceToPlayer <= attackRange)
+            {
+                AttackPlayer();
+            }
+            else
+            {
+                MoveTowardsPlayer();
+            }
+        }
+        else
+        {
+            // 50% chance to attack the nearest turret
+            if (distanceToTurret <= attackRange)
+            {
+                AttackTurret();
+            }
+            else
+            {
+                MoveTowardsTurret();
+            }
         }
     }
 
-    private bool EnemyInsideHitBox()
+    void MoveTowardsPlayer()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(hitBox.bounds.center,
-        new Vector3(hitBox.bounds.size.x * range, hitBox.bounds.size.y * hbHeight, hitBox.bounds.size.z)
-        , 0, Vector2.right, 0, playerLayer);
-
-        if (hit.collider != null)
-        {
-            hitColliderTag = hit.collider.gameObject.tag;
-
-            if (hitColliderTag == "Player")
-            {
-                hitColliderTag = "Player";
-                playerHealthManager = hit.transform.GetComponent<PlayerHealthManager>();
-            }
-
-            if (hitColliderTag == "Plant")
-            {
-                hitColliderTag = "Plant";
-                plant = hit.transform;
-                plantHealthManager = hit.transform.GetComponent<PlantHealthManager>();
-            }
-        }
-
-        return hit.collider != null;
+        Vector3 direction = (player.transform.position - transform.position).normalized;
+        transform.Translate(direction * movementSpeed * Time.deltaTime);
     }
 
-    private void OnDrawGizmos()
+    void MoveTowardsTurret()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(hitBox.bounds.center,
-        new Vector3(hitBox.bounds.size.x * range, hitBox.bounds.size.y * hbHeight, hitBox.bounds.size.z));
+        Vector3 direction = (targetTurret.position - transform.position).normalized;
+        transform.Translate(direction * movementSpeed * Time.deltaTime);
+    }
+
+    protected virtual void AttackPlayer()
+    {
+        // Implement your attack logic on the player
+        lastAttackTime = Time.time;
+    }
+
+    protected virtual void AttackTurret()
+    {
+        // Implement your attack logic on the nearest turret
+        lastAttackTime = Time.time;
+    }
+
+    void FindNearestTurret()
+    {
+        activeTurrets = FindObjectsOfType<PlantTurret>();
+
+        float closestDistance = float.MaxValue;
+
+        foreach (PlantTurret turret in activeTurrets)
+        {
+            float distance = Vector3.Distance(transform.position, turret.transform.position);
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                targetTurret = turret.transform;
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
