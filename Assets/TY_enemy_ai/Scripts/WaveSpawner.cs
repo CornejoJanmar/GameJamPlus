@@ -7,41 +7,51 @@ using UnityEngine;
 public class WaveSpawner : MonoBehaviour
 {
     public WaveSo[] waves;
-    private WaveSo currentWave;
+    public WaveSo currentWave;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private GameObject parentEnemyPrefab;
     public TMP_Text waveText;
     private float timeBetweenSpawns;
     private bool stopSpawning;
     private int i = 0;
-
+    private bool firstSpawn;
+    public float cooldownTimer;
     private void Awake()
     {
         currentWave = waves[i];
         timeBetweenSpawns = currentWave.TimeBeforeThisWave;
+        firstSpawn = false;
+        cooldownTimer = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         waveText.text = currentWave.waveName.ToString();
-        if(stopSpawning)
+        if (stopSpawning)
         {
             return;
         }
 
-        if(Time.time >= timeBetweenSpawns)
-        {
-            SpawnWave();
-            IncWave();
 
-            timeBetweenSpawns = Time.time + currentWave.TimeBeforeThisWave;
+        if (parentEnemyPrefab.transform.childCount <= 0)
+        {
+            cooldownTimer += Time.deltaTime;
+            Debug.Log(cooldownTimer);
+            if (cooldownTimer >= currentWave.TimeBeforeThisWave)
+            {
+                cooldownTimer = 0;
+                Debug.Log("Spawn!!!");
+                SpawnWave();
+                IncWave();
+            }
         }
     }
 
     private void SpawnWave()
     {
-        for(int i = 0; i < currentWave.NumberToSpawn; i++) 
+
+        for (int i = 0; i < currentWave.NumberToSpawn; i++)
         {
             int randomEnemy = Random.Range(0, currentWave.EnemiesInWave.Length);
             int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
@@ -53,7 +63,7 @@ public class WaveSpawner : MonoBehaviour
     }
     private void IncWave()
     {
-        if(i + 1 < waves.Length)
+        if (i + 1 < waves.Length)
         {
             i++;
             currentWave = waves[i];
