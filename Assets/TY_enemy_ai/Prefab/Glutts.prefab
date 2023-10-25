@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2875258702421948923}
   m_Layer: 12
   m_Name: Glutts
-  m_TagString: Glutts
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

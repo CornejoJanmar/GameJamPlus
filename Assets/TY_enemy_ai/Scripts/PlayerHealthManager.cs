@@ -6,6 +6,7 @@ public class PlayerHealthManager : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10;
     [SerializeField] private float currentHealth;
+    [SerializeField] private GameObject gameover;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +23,7 @@ public class PlayerHealthManager : MonoBehaviour
         }
         else
         {
-            //gameover
+            gameover.SetActive(true);
         }
     }
 }

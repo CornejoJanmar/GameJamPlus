@@ -12,7 +12,7 @@ public class SceneManagement : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false; // delete when building the game
+      //  UnityEditor.EditorApplication.isPlaying = false; // delete when building the game
     }
     public void MainMenu()
     {

@@ -7,6 +7,9 @@ TagManager:
   - Plant
   - Prowler
   - Glutts
+  - enemy
+  - bullet
+  - env
   layers:
   - Default
   - TransparentFX
